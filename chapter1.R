@@ -13,3 +13,8 @@ DAG = set.arc(DAG, from = "E", to="R")
 DAG = set.arc(DAG, from = "R", to="T")
 DAG = set.arc(DAG, from = "O", to="T")
 plot(DAG)
+
+# graph structure = product of conditional probabilities
+modelstring(DAG)
+nodes(DAG)
+arcs(DAG)
