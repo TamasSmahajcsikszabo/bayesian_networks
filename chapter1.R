@@ -56,4 +56,29 @@ O.prob=array(c(0.96, 0.04, 0.92, 0.08), dim=c(2,2), dimnames=list(O=O.lv, E=E.lv
 R.prob=array(c(0.25, 0.75, 0.20, 0.80), dim=c(2,2), dimnames=list(R=R.lv, E=E.lv))
 
 # two parens, 3 dim. prob. tables
-E.prob=array(c(0.48, 0.42, 0.10, 0.56, 0.36, 0.08, 0.58, 0.24, 0.18, 0.70, 0.21, 0.09), dim=c(2,3, 2), dimnames=list( E=E.lv, A=A.lv, S=S.lv))
+E.prob=array(c(0.75, 0.25, 0.72, 0.28, 0.88, 0.12, 0.64, 0.36, 0.70, 0.30, 0.90, 0.10),
+    dim=c(2,3,2), 
+    dimnames=list( E=E.lv,A=A.lv, S=S.lv))
+
+T.prob=array(c(0.48, 0.42, 0.10, 0.56, 0.36, 0.08, 0.58, 0.24, 0.18, 0.70, 0.21, 0.09),
+    dim=c(3,2,2), 
+    dimnames=list( T=T.lv, O=O.lv, R=R.lv))
+
+# BNs involve this kind of dim. reduction: local distr. present fewer parameters than
+# global and local distr. can be handled independently from the rest
+
+DAG3=model2network("[A][S][E|A:S][O|E][R|E][T|O:R]")
+cpt=list(A=A.prob, S=S.prob, T=T.prob, O=O.prob, R=R.prob, E=E.prob)
+bn=custom.fit(DAG, cpt)
+nparams(bn)
+
+# a more typical case: learning local distributions from the data
+survey=read.table("data/survey.txt", header=T, colClasses='factor')
+dag=bn.fit(survey)
+# conditional probabilities in the local distributions are estimated from the
+# empirical frequencies
+# this yields the classic frequentist maximum likelihood estimates
+bn.mle=bn.fit(DAG, data=survey, method='mle')
+
+# alternatively, the bayesian approach using the posterior distributions
+bn.bayes=bn.fit(DAG, data=survey, method='bayes', iss=10)
