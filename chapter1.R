@@ -93,8 +93,23 @@ nparams(bn)
 survey=read.table("data/survey.txt", header=T, colClasses='factor')
 # conditional probabilities in the local distributions are estimated from the
 # empirical frequencies
-# this yields the classic frequentist maximum likelihood estimates
-bn.mle=bn.fit(DAG, data=survey, method='mle')
+# this yields the classic frequentist and  maximum likelihood estimates
+bn.mle=bn.fit(DAG, data=survey, method='mle') # the structure is assumed to be known, and passed as DAG
 
 # alternatively, the bayesian approach using the posterior distributions
-bn.bayes=bn.fit(DAG, data=survey, method='bayes', iss=10)
+bn.bayes=bn.fit(DAG, data=survey, method='bayes', iss=10) 
+# iss = imaginary sample size
+
+n=nrow(survey)
+mask= survey$O=='emp' & survey$E=='high'
+idx=seq(1,n)[mask]
+poe=nrow(survey[idx,])
+
+mask= survey$E=='high'
+idx=seq(1,n)[mask]
+pe=nrow(survey[idx,])
+
+p_OE = poe/n
+p_E = pe/n
+nO=nlevels(bn.bayes$O)
+nE=nlevels(bn.bayes$E)
