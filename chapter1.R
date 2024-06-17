@@ -98,7 +98,11 @@ bn.mle=bn.fit(DAG, data=survey, method='mle') # the structure is assumed to be k
 
 # alternatively, the bayesian approach using the posterior distributions
 bn.bayes=bn.fit(DAG, data=survey, method='bayes', iss=10) 
-# iss = imaginary sample size
+# iss = imaginary sample size (equivalent sample size) = how much weight is assigned to the prior distribution
+# this weight is specified as the size of an imaginary sample supporting the prior distribution, normally 1 to 10
+# more robust than MLE and has better predictive power
+# higher ISS makes the posterior more flat / contrasted
+
 
 n=nrow(survey)
 mask= survey$O=='emp' & survey$E=='high'
